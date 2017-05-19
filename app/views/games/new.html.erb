@@ -1,0 +1,54 @@
+<!-- Validation failure messages -->
+<% if @game.errors.any? %>
+  <% @game.errors.full_messages.each do |message| %>
+    <div class="alert alert-dismissable alert-danger">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <%= message %>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="page-header">
+  <h3>Add Game</h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <form action="/create_game" method="post">
+      <!-- Hidden input for authenticity token to protect from forgery -->
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+      <!-- Label and input for title -->
+      <div class="form-group">
+        <label for="title" class="control-label">
+          Title
+        </label>
+
+        <input type="text" id="title" name="title" placeholder="Title" class="form-control" value="<%= @game.title %>">
+      </div>
+
+      <!-- Label and input for developer -->
+      <div class="form-group">
+        <label for="developer" class="control-label">
+          Developer
+        </label>
+
+        <input type="text" id="developer" name="developer" placeholder="Developer" class="form-control" value="<%= @game.developer %>">
+      </div>
+
+      <!-- Label and input for multiplayer_status -->
+      <div class="checkbox">
+        <label for="multiplayer_status">
+          <input type="checkbox" id="multiplayer_status" name="multiplayer_status" value="1" <%= "checked" if @game.multiplayer_status %>>
+          Multiplayer status
+        </label>
+      </div>
+
+      <button class="btn btn-success">
+        Create Game
+      </button>
+      or
+      <a href="/games">Cancel</a>
+    </form>
+  </div>
+</div>

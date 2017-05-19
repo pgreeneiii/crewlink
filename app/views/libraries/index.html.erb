@@ -1,0 +1,32 @@
+<div class="page-header">
+  <h1>
+    Libraries
+    <a href="/libraries/new" class="btn btn-lg btn-success">New Library</a>
+  </h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped table-hover">
+      <tr>
+        <th>Owner</th>
+        <th>Game</th>
+        <th>Default looking to play status</th>
+        <th>Actions</th>
+      </tr>
+
+      <% @libraries.each do |library| %>
+      <tr>
+        <td><%= library.owner_id %></td>
+        <td><%= library.game_id %></td>
+        <td><%= library.default_looking_to_play_status %></td>
+        <td>
+          <a href="/libraries/<%= library.id %>" class="btn btn-primary">Show</a>
+          <a href="/libraries/<%= library.id %>/edit" class="btn btn-warning">Edit</a>
+          <a href="/delete_library/<%= library.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="page-header">
+  <h1>
+    Gamers
+    <a href="/gamers/new" class="btn btn-lg btn-success">New Gamer</a>
+  </h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped table-hover">
+      <tr>
+        <th>Email</th>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Steam username</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Profile img</th>
+        <th>Last played game</th>
+        <th>Online status</th>
+        <th>In game status</th>
+        <th>Looking to play status</th>
+        <th>Actions</th>
+      </tr>
+
+      <% @gamers.each do |gamer| %>
+      <tr>
+        <td><%= gamer.email %></td>
+        <td><%= gamer.username %></td>
+        <td><%= gamer.password %></td>
+        <td><%= gamer.steam_username %></td>
+        <td><%= gamer.first_name %></td>
+        <td><%= gamer.last_name %></td>
+        <td><%= gamer.profile_img %></td>
+        <td><%= gamer.last_played_game %></td>
+        <td><%= gamer.online_status %></td>
+        <td><%= gamer.in_game_status %></td>
+        <td><%= gamer.looking_to_play_status %></td>
+        <td>
+          <a href="/gamers/<%= gamer.id %>" class="btn btn-primary">Show</a>
+          <a href="/gamers/<%= gamer.id %>/edit" class="btn btn-warning">Edit</a>
+          <a href="/delete_gamer/<%= gamer.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="page-header">
+  <h3>Game #<%= @game.id %></h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12 mb-2">
+    <dl class="dl-horizontal">
+      <dt>Title</dt>
+      <dd><%= @game.title %></dd>
+
+      <dt>Developer</dt>
+      <dd><%= @game.developer %></dd>
+
+      <dt>Multiplayer status</dt>
+      <dd><%= @game.multiplayer_status %></dd>
+
+    </dl>
+
+    <div class="btn-group btn-group-justified">
+      <a href="/games" class="btn btn-primary">
+        Back
+      </a>
+      <a href="/games/<%= @game.id %>/edit" class="btn btn-warning">
+        Edit
+      </a>
+      <a href="/delete_game/<%= @game.id %>" class="btn btn-danger" rel="nofollow">
+        Delete
+      </a>
+    </div>
+  </div>
+</div>
