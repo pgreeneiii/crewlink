@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   # Routes for the Library resource:
   # CREATE
+
+  get("/", {:controller => "gamers", :action => "index"})
+
   get "/libraries/new", :controller => "libraries", :action => "new"
   post "/create_library", :controller => "libraries", :action => "create"
 
