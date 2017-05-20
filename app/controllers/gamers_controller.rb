@@ -7,6 +7,12 @@ class GamersController < ApplicationController
 
   def show
     @gamer = Gamer.find(params[:id])
+    Steam.apikey = ENV["steam_api_key"]
+    steam_id = Steam::User.vanity_to_steamid(@gamer.steam_username)
+
+    @games = Steam::Player.owned_games(steam_id)["games"]
+
+
 
     render("gamers/show.html.erb")
   end
@@ -19,6 +25,7 @@ class GamersController < ApplicationController
 
   def create
     @gamer = Gamer.new
+    Steam.apikey = ENV["steam_api_key"]
 
     @gamer.email = params[:email]
     @gamer.username = params[:username]
@@ -35,6 +42,47 @@ class GamersController < ApplicationController
     save_status = @gamer.save
 
     if save_status == true
+      if @gamer.steam_username != nil
+         steam_id = Steam::User.vanity_to_steamid(@gamer.steam_username)
+         games = Steam::Player.owned_games(steam_id)["games"]
+
+         games.each do |appID|
+
+            if Game.where(:app_id => appID["appid"]).exists? == false
+               game_num = appID["appid"].to_s
+               url = "http://store.steampowered.com/api/appdetails?appids=#{game_num}"
+               raw_data = open(url).read
+               parsed_data = JSON.parse(raw_data)[game_num]
+               success = parsed_data["success"]
+
+               if success == true
+                  game = Game.new
+                  app_id = appID["appid"]
+                  title = parsed_data["data"]["name"]
+                  developer = parsed_data["data"]["developers"]
+                  multiplayer_status = 0
+
+                  categories = parsed_data["data"]["categories"]
+
+                  if categories.class == Array
+
+                     categories.each do |type|
+                        if type["id"] == 1
+                           multiplayer_status = 1
+                        end
+                     end
+
+                  game.app_id = app_id
+                  game.title = title
+                  game.developer = developer
+                  game.multiplayer_status = multiplayer_status
+                  game.save                                 
+                  end
+               end
+            end
+         end
+      end
+
       redirect_to("/gamers/#{@gamer.id}", :notice => "Gamer created successfully.")
     else
       render("gamers/new.html.erb")

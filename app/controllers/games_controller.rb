@@ -8,6 +8,8 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
 
+    url="http://store.steampowered.com/api/appdetails?appids=#{@appID}"
+
     render("games/show.html.erb")
   end
 
