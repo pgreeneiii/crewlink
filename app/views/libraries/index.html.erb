@@ -17,8 +17,8 @@
 
       <% @libraries.each do |library| %>
       <tr>
-        <td><%= library.owner_id %></td>
-        <td><%= library.game_id %></td>
+        <td><%= Gamer.where(:id => library.owner_id).pluck(:steam_username)[0] %></td>
+        <td><%= Game.where(:id => library.game_id).pluck(:title)[0] %></td>
         <td><%= library.default_looking_to_play_status %></td>
         <td>
           <a href="/libraries/<%= library.id %>" class="btn btn-primary">Show</a>

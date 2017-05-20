@@ -53,19 +53,3 @@
     </div>
   </div>
 </div>
-
-<ul>
-   <% @games.each do |game| %>
-      <% url = "http://store.steampowered.com/api/appdetails?appids=#{game["appid"]}" %>
-      <% raw_data = open(url).read %>
-      <% parsed_data = JSON.parse(raw_data) %>
-
-
-         <% if parsed_data[game["appid"].to_s]["success"] == true %>
-         <li>
-            <%= parsed_data[game["appid"].to_s]["data"]["name"] %>
-         </li>
-         <% end %>
-
-   <% end %>
-</ul>

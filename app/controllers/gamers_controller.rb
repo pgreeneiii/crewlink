@@ -71,14 +71,31 @@ class GamersController < ApplicationController
                            multiplayer_status = 1
                         end
                      end
+                  end
 
                   game.app_id = app_id
                   game.title = title
                   game.developer = developer
                   game.multiplayer_status = multiplayer_status
-                  game.save                                 
-                  end
+                  game.save
+
+                  library = Library.new
+                  library.owner_id = @gamer.id
+                  library.game_id = game.id
+                  library.default_looking_to_play_status = game.multiplayer_status
+
+                  library.save
                end
+
+            else
+               game_id = Game.where(:app_id => appID["appid"]).pluck(:id)[0]
+               multiplayer_status = Game.where(:app_id => appID["appid"]).pluck(:multiplayer_status)[0]
+               library = Library.new
+               library.owner_id = @gamer.id
+               library.game_id = game_id
+               library.default_looking_to_play_status = multiplayer_status
+
+               library.save
             end
          end
       end
