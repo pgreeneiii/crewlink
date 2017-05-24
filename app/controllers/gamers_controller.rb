@@ -1,4 +1,6 @@
 class GamersController < ApplicationController
+   # auth callback POST comes from Steam so we can't attach CSRF token
+   skip_before_action :verify_authenticity_token, :only => :auth_callback
   def index
     @gamers = Gamer.all
 
@@ -24,7 +26,6 @@ class GamersController < ApplicationController
   end
 
   def create
-    @gamer = Gamer.new
     Steam.apikey = ENV["steam_api_key"]
 
     @gamer.email = params[:email]
@@ -147,4 +148,17 @@ class GamersController < ApplicationController
       redirect_to(:back, :notice => "Gamer deleted.")
     end
   end
+end
+
+def auth_callback
+   auth = request.env['omniauth.auth']
+   session[:current_user] = { nickname: auth[:info][:nickname], image: auth[:info][:image], uid: auth[:uid], name: auth[:info][:name] }
+
+   @gamer = Gamer.new
+   @steam_username = session["current_user"]["nickname"]
+   render("/gamers/new")
+
+   p "****************************************"
+   p session[:current_user]
+   p "****************************************"
 end
