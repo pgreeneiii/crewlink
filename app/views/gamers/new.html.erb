@@ -33,7 +33,7 @@
           Username
         </label>
 
-        <input type="text" id="username" name="username" class="form-control" value="<%= @steam_username %>">
+        <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="<%= @steam_username %>">
       </div>
 
       <!-- Label and input for password -->
@@ -47,8 +47,11 @@
 
       <!-- Label and input for steam_username -->
       <div class="form-group">
+         <label for="steam_username" class="control-label">
+           Steam Username
+         </label>
 
-        <input class="form-control" type="hidden" id="steam_username" name="steam_username" placeholder="Steam username" value="<%= @steam_username %>">
+        <input class="form-control" type="text" id="steam_username" name="steam_username" placeholder="Steam username" value="<%= @steam_username %>">
       </div>
 
       <!-- Label and input for first_name -->
