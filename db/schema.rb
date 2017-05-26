@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524031821) do
+ActiveRecord::Schema.define(version: 20170526005011) do
 
   create_table "friends", force: :cascade do |t|
     t.integer  "username_id"
@@ -115,6 +115,32 @@ ActiveRecord::Schema.define(version: 20170524031821) do
     t.boolean  "read_status"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "username"
+    t.string   "steam_uid"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "profile_img"
+    t.integer  "last_played_game"
+    t.boolean  "online_status"
+    t.integer  "in_game_status"
+    t.boolean  "looking_to_play_status"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
 end

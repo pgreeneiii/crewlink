@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get 'gamers/index'
   root to: 'gamers#index'
   post 'auth/steam/callback' => 'gamers#auth_callback'
