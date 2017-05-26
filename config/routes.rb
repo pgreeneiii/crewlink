@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'gamers/index'
-  root 'gamers#index'
+  root to: 'gamers#index'
   post 'auth/steam/callback' => 'gamers#auth_callback'
 
   # Routes for the Library resource:
