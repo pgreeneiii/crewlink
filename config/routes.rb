@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => {:omniauth_callbacks => "callbacks"}
   get 'gamers/index'
   root to: 'gamers#index'
+  post 'auth/steam/callback' => 'gamers#auth_callback'
 
   # Routes for the Library resource:
   # CREATE
