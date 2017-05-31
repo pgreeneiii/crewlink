@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170530233336) do
+ActiveRecord::Schema.define(version: 20170531184715) do
 
   create_table "friends", force: :cascade do |t|
     t.integer  "username_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20170530233336) do
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.integer  "app_id"
+    t.string   "img_url"
   end
 
   create_table "identities", force: :cascade do |t|

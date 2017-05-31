@@ -12,6 +12,7 @@ class User < ApplicationRecord
 
    has_many(:libraries, :class_name => "Library", :foreign_key => "owner_id", :dependent => :destroy)
    has_many(:games, :through => :libraries)
+   has_many :owned_games, :through => :libraries, :source => :game
 
    def self.find_for_oauth(auth, signed_in_resource = nil)
 

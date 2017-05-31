@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks'}
   get 'gamers/index'
-  root to: 'gamers#index'
+  root to: 'libraries#index'
   #post 'auth/steam/callback' => 'gamers#auth_callback'
 
   match 'users/:id/finish_signup' => 'users#finish_signup', via: [:get, :patch], :as => :finish_signup
@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   # Routes for the Game resource:
   # CREATE
   get "/games/new", :controller => "games", :action => "new"
+  get("/refresh_games", {:controller => "games", :action => :refresh})
   post "/create_game", :controller => "games", :action => "create"
 
   # READ

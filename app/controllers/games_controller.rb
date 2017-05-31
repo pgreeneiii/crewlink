@@ -1,71 +1,135 @@
 class GamesController < ApplicationController
-  def index
-    @games = Game.all
 
-    render("games/index.html.erb")
-  end
+   def refresh
+      games = Game.all
+      # Will use counters to provide info about results to user
+      refresh_count = 0
+      refresh_error = 0
 
-  def show
-    @game = Game.find(params[:id])
+      games.each do |game|
+         # Checks if any hash in game is empty
+         if game.needs_refresh?
+            url = "http://store.steampowered.com/api/appdetails?appids=#{game.app_id}"
+            raw_data = open(url).read
+            parsed_data = JSON.parse(raw_data)[game.app_id.to_s]
+            success = parsed_data["success"]
 
-    url="http://store.steampowered.com/api/appdetails?appids=#{@appID}"
+            if success == true
+               game.title = parsed_data["data"]["name"]
+               game.developer = parsed_data["data"]["developers"]
+               game.img_url = parsed_data["data"]["header_image"]
+               multiplayer_status = 0
 
-    render("games/show.html.erb")
-  end
+               categories = parsed_data["data"]["categories"]
 
-  def new
-    @game = Game.new
+               if categories.class == Array
 
-    render("games/new.html.erb")
-  end
+                  categories.each do |type|
+                     if type["id"] == 1
+                        multiplayer_status = 1
+                     end
+                  end
+               end
 
-  def create
-    @game = Game.new
+               game.multiplayer_status = multiplayer_status
+               game.save
 
-    @game.title = params[:title]
-    @game.developer = params[:developer]
-    @game.multiplayer_status = params[:multiplayer_status]
+               if game.needs_refresh?
+                  refresh_error = refresh_error + 1
+               else
+                  refresh_count = refresh_count + 1
+               end
+            end
+         end
+      end
 
-    save_status = @game.save
+      if refresh_count == 0 && refresh_error == 0
+         flash[:alert] = "All games already up-to-date"
+      elsif refresh_count == 1
+         flash[:notice] = "#{refresh_count} game has been updated"
+         if refresh_error == 1
+            flash[:alert] = "#{refresh_error} game could not be updated"
+         elsif refresh_error > 1
+            flash[:alert] = "#{refresh_error} games could not be updated"
+         end
+      elsif refresh_count > 1
+         flash[:notice] = "#{refresh_count} games have been updated"
+         if refresh_error == 1
+            flash[:alert] = "#{refresh_error} game could not be updated"
+         elsif refresh_error > 1
+            flash[:alert] = "#{refresh_error} games could not be updated"
+         end
+      end
+      redirect_back(fallback_location: root_path)
+   end
 
-    if save_status == true
-      redirect_to("/games/#{@game.id}", :notice => "Game created successfully.")
-    else
+   def index
+      @games = Game.all
+
+      render("games/index.html.erb")
+   end
+
+   def show
+      @game = Game.find(params[:id])
+
+      url="http://store.steampowered.com/api/appdetails?appids=#{@appID}"
+
+      render("games/show.html.erb")
+   end
+
+   def new
+      @game = Game.new
+
       render("games/new.html.erb")
-    end
-  end
+   end
 
-  def edit
-    @game = Game.find(params[:id])
+   def create
+      @game = Game.new
 
-    render("games/edit.html.erb")
-  end
+      @game.title = params[:title]
+      @game.developer = params[:developer]
+      @game.multiplayer_status = params[:multiplayer_status]
 
-  def update
-    @game = Game.find(params[:id])
+      save_status = @game.save
 
-    @game.title = params[:title]
-    @game.developer = params[:developer]
-    @game.multiplayer_status = params[:multiplayer_status]
+      if save_status == true
+         redirect_to("/games/#{@game.id}", :notice => "Game created successfully.")
+      else
+         render("games/new.html.erb")
+      end
+   end
 
-    save_status = @game.save
+   def edit
+      @game = Game.find(params[:id])
 
-    if save_status == true
-      redirect_to("/games/#{@game.id}", :notice => "Game updated successfully.")
-    else
       render("games/edit.html.erb")
-    end
-  end
+   end
 
-  def destroy
-    @game = Game.find(params[:id])
+   def update
+      @game = Game.find(params[:id])
 
-    @game.destroy
+      @game.title = params[:title]
+      @game.developer = params[:developer]
+      @game.multiplayer_status = params[:multiplayer_status]
 
-    if URI(request.referer).path == "/games/#{@game.id}"
-      redirect_to("/", :notice => "Game deleted.")
-    else
-      redirect_to(:back, :notice => "Game deleted.")
-    end
-  end
+      save_status = @game.save
+
+      if save_status == true
+         redirect_to("/games/#{@game.id}", :notice => "Game updated successfully.")
+      else
+         render("games/edit.html.erb")
+      end
+   end
+
+   def destroy
+      @game = Game.find(params[:id])
+
+      @game.destroy
+
+      if URI(request.referer).path == "/games/#{@game.id}"
+         redirect_to("/", :notice => "Game deleted.")
+      else
+         redirect_to(:back, :notice => "Game deleted.")
+      end
+   end
 end

@@ -19,6 +19,7 @@
     <table class="table table-striped table-hover">
       <tr>
         <th>Owner</th>
+        <th>Image</th>
         <th>Game</th>
         <th>Default looking to play status</th>
         <th>Actions</th>
@@ -27,6 +28,7 @@
       <% @libraries.each do |library| %>
       <tr>
         <td><%= library.user.username %></td>
+        <td><img src="<%= library.game.img_url %>"></td>
         <td><%= library.game.title %></td>
         <td><%= library.default_looking_to_play_status %></td>
         <td>

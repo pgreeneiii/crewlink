@@ -24,6 +24,7 @@ class LibrariesController < ApplicationController
                   app_id = appID["appid"]
                   title = parsed_data["data"]["name"]
                   developer = parsed_data["data"]["developers"]
+                  img_url = parsed_data["data"]["header_image"]
                   multiplayer_status = 0
 
                   categories = parsed_data["data"]["categories"]
@@ -78,7 +79,7 @@ class LibrariesController < ApplicationController
 
 
    def index
-      @libraries = Library.all
+      @libraries = current_user.libraries
 
       render("libraries/index.html.erb")
    end
