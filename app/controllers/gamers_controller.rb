@@ -1,21 +1,21 @@
 class GamersController < ApplicationController
    # auth callback POST comes from Steam so we can't attach CSRF token
    skip_before_action :verify_authenticity_token, :only => :auth_callback
-
-   def auth_callback
-      auth = request.env['omniauth.auth']
-      session[:current_user] = { nickname: auth[:info][:nickname], image: auth[:info][:image], uid: auth[:uid], name: auth[:info][:name] }
-
-      @gamer = Gamer.new
-      @steam_username = session[:current_user][:nickname]
-
-      p "****************************************"
-      p session[:current_user]
-      p @steam_username
-      p "****************************************"
-
-      render("gamers/new.html.erb")
-   end
+   #
+   # def auth_callback
+   #    auth = request.env['omniauth.auth']
+   #    session[:current_user] = { nickname: auth[:info][:nickname], image: auth[:info][:image], uid: auth[:uid], name: auth[:info][:name] }
+   #
+   #    @gamer = Gamer.new
+   #    @steam_username = session[:current_user][:nickname]
+   #
+   #    p "****************************************"
+   #    p session[:current_user]
+   #    p @steam_username
+   #    p "****************************************"
+   #
+   #    render("gamers/new.html.erb")
+   # end
 
    def index
       @gamers = Gamer.all
@@ -112,7 +112,7 @@ class GamersController < ApplicationController
                      library.save
                   end
 
-               # Game already exists, in database - skip to building library
+                  # Game already exists, in database - skip to building library
                else
                   # Pull Game ID from database by Steam App ID
                   game_id = Game.where(:app_id => appID["appid"]).pluck(:id)[0]
