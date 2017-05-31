@@ -61,4 +61,31 @@ class User < ApplicationRecord
    def email_verified?
       self.email && self.email !~ TEMP_EMAIL_REGEX
    end
+
+
+# Class ReadDataFromApiJob
+#   def read_from_api
+#      users = User.all
+#      user.each do |user|
+#         url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=#{ENV["STEAM_WEB_API_KEY"]}&steamids=#{user.steam_uid}"
+#         parsed_data = JSON.parse(open(url).read)
+#         online_status = parsed_data["response"]["players"][0]["personastate"]
+#         if online_status > 0
+#            online_status = 1
+#         end
+#
+#         in_game_status = parsed_data["response"]["players"][0]["gameid"]
+#
+#         if in_game_status.nil?
+#            in_game_status = 0
+#         end
+#
+#         user.online_status = online_status
+#         user.in_game_status = in_game_status
+#
+#         user.save
+#      end
+#   end
+# end
+
 end
