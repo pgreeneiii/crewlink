@@ -1,4 +1,6 @@
 class LibrariesController < ApplicationController
+   before_action :ensure_signup_complete
+
   def index
     @libraries = Library.all
 
