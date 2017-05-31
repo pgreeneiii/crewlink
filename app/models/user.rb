@@ -10,6 +10,9 @@ class User < ApplicationRecord
 
    validates_format_of :email, :without => TEMP_EMAIL_REGEX, on: :update
 
+   has_many(:libraries, :class_name => "Library", :foreign_key => "owner_id", :dependent => :destroy)
+   has_many(:games, :through => :libraries)
+
    def self.find_for_oauth(auth, signed_in_resource = nil)
 
       # Get the identity and user if they exist

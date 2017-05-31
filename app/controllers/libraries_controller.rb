@@ -1,71 +1,147 @@
 class LibrariesController < ApplicationController
    before_action :ensure_signup_complete
 
-  def index
-    @libraries = Library.all
+   def load
+      if current_user.steam_uid != nil #Steam_username has to exist to call API
+         # Converts steam username to 64-digit id number
+         steam_id = current_user.steam_uid
 
-    render("libraries/index.html.erb")
-  end
+         # Calls user's owned games by Steam App ID
+         games = Steam::Player.owned_games(steam_id)["games"]
 
-  def show
-    @library = Library.find(params[:id])
+         games.each do |appID|
+            # Only adds game to library if game already doesn't exist
+            if Game.where(:app_id => appID["appid"]).exists? == false
+               game_num = appID["appid"].to_s
+               url = "http://store.steampowered.com/api/appdetails?appids=#{game_num}"
+               raw_data = open(url).read
+               parsed_data = JSON.parse(raw_data)[game_num]
+               success = parsed_data["success"]
 
-    render("libraries/show.html.erb")
-  end
+               # Some App IDs no longer work (Steam has deleted data), so must test for success value of true
+               if success == true
+                  game = Game.new
+                  app_id = appID["appid"]
+                  title = parsed_data["data"]["name"]
+                  developer = parsed_data["data"]["developers"]
+                  multiplayer_status = 0
 
-  def new
-    @library = Library.new
+                  categories = parsed_data["data"]["categories"]
 
-    render("libraries/new.html.erb")
-  end
+                  if categories.class == Array
 
-  def create
-    @library = Library.new
+                     categories.each do |type|
+                        if type["id"] == 1
+                           multiplayer_status = 1
+                        end
+                     end
+                  end
 
-    @library.owner_id = params[:owner_id]
-    @library.game_id = params[:game_id]
-    @library.default_looking_to_play_status = params[:default_looking_to_play_status]
+                  # Build game entry
+                  game.app_id = app_id
+                  game.title = title
+                  game.developer = developer
+                  game.multiplayer_status = multiplayer_status
+                  game.save
 
-    save_status = @library.save
+                  # Build library entry
+                  library = Library.new
+                  library.owner_id = current_user.id
+                  library.game_id = game.id
+                  library.default_looking_to_play_status = game.multiplayer_status
 
-    if save_status == true
-      redirect_to("/libraries/#{@library.id}", :notice => "Library created successfully.")
-    else
+                  library.save
+               end
+
+               # Game already exists, in database - skip to building library
+            else
+               # Pull Game ID from database by Steam App ID
+               game_id = Game.where(:app_id => appID["appid"]).pluck(:id)[0]
+               # Pull multiplayer status from game database
+               multiplayer_status = Game.find_by(:id => game_id).multiplayer_status
+
+               # Build library entry
+               library = Library.new
+               library.owner_id = current_user.id
+               library.game_id = game_id
+               library.default_looking_to_play_status = multiplayer_status
+
+               library.save
+            end
+         end
+         flash[:notice] = "Your library is up to date."
+          redirect_back(fallback_location: root_path)
+      else
+         flash[:alert] = "You have not linked your Steam account."
+      end
+   end
+
+
+   def index
+      @libraries = Library.all
+
+      render("libraries/index.html.erb")
+   end
+
+   def show
+      @library = Library.find(params[:id])
+
+      render("libraries/show.html.erb")
+   end
+
+   def new
+      @library = Library.new
+
       render("libraries/new.html.erb")
-    end
-  end
+   end
 
-  def edit
-    @library = Library.find(params[:id])
+   def create
+      @library = Library.new
 
-    render("libraries/edit.html.erb")
-  end
+      @library.owner_id = params[:owner_id]
+      @library.game_id = params[:game_id]
+      @library.default_looking_to_play_status = params[:default_looking_to_play_status]
 
-  def update
-    @library = Library.find(params[:id])
+      save_status = @library.save
 
-    @library.owner_id = params[:owner_id]
-    @library.game_id = params[:game_id]
-    @library.default_looking_to_play_status = params[:default_looking_to_play_status]
+      if save_status == true
+         redirect_to("/libraries/#{@library.id}", :notice => "Library created successfully.")
+      else
+         render("libraries/new.html.erb")
+      end
+   end
 
-    save_status = @library.save
+   def edit
+      @library = Library.find(params[:id])
 
-    if save_status == true
-      redirect_to("/libraries/#{@library.id}", :notice => "Library updated successfully.")
-    else
       render("libraries/edit.html.erb")
-    end
-  end
+   end
 
-  def destroy
-    @library = Library.find(params[:id])
+   def update
+      @library = Library.find(params[:id])
 
-    @library.destroy
+      @library.owner_id = params[:owner_id]
+      @library.game_id = params[:game_id]
+      @library.default_looking_to_play_status = params[:default_looking_to_play_status]
 
-    if URI(request.referer).path == "/libraries/#{@library.id}"
-      redirect_to("/", :notice => "Library deleted.")
-    else
-      redirect_to(:back, :notice => "Library deleted.")
-    end
-  end
+      save_status = @library.save
+
+      if save_status == true
+         redirect_to("/libraries/#{@library.id}", :notice => "Library updated successfully.")
+      else
+         render("libraries/edit.html.erb")
+      end
+   end
+
+   def destroy
+      @library = Library.find(params[:id])
+
+      @library.destroy
+
+      if URI(request.referer).path == "/libraries/#{@library.id}"
+         redirect_to("/", :notice => "Library deleted.")
+      else
+         redirect_to(:back, :notice => "Library deleted.")
+      end
+   end
 end

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   #get("/", {:controller => "gamers", :action => "index"})
 
   get "/libraries/new", :controller => "libraries", :action => "new"
+  get("/load_library", {:controller => "libraries", :action => "load"})
   post "/create_library", :controller => "libraries", :action => "create"
 
   # READ

@@ -5,6 +5,15 @@
   </h1>
 </div>
 
+<form action="/load_library" method="get">
+  <!-- Hidden input for authenticity token to protect from forgery -->
+  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+  <button class="btn btn-success">
+    Refresh Library
+  </button>
+</form>
+
 <div class="row">
   <div class="col-md-12">
     <table class="table table-striped table-hover">
@@ -17,8 +26,8 @@
 
       <% @libraries.each do |library| %>
       <tr>
-        <td><%= Gamer.where(:id => library.owner_id).pluck(:steam_username)[0] %></td>
-        <td><%= Game.where(:id => library.game_id).pluck(:title)[0] %></td>
+        <td><%= library.user.username %></td>
+        <td><%= library.game.title %></td>
         <td><%= library.default_looking_to_play_status %></td>
         <td>
           <a href="/libraries/<%= library.id %>" class="btn btn-primary">Show</a>
