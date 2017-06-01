@@ -48,7 +48,9 @@
         <ul class="nav navbar-nav">
           <li><a href="/libraries">My Library</a></li>
           <li><a href="/games">Games</a></li>
-          <li><a href="/messages">Messages</a></li>
+          <% if current_user != nil %> <!-- If Signed In -->
+          <li><%= link_to 'Your Conversations', conversations_path %></li>
+          <% end %>
           <li><a href="/friends">My Friends</a></li>
           <li><a href="/gamers">Gamers</a></li>
           <li><a href="/rails/info">Sitemap</a></li>
@@ -81,6 +83,10 @@
         <%= alert %>
       </div>
     <% end %>
+
+    <div class="page-header">
+      <h1><%= yield :page_header %></h1>
+    </div>
 
     <%= yield %>
   </div>

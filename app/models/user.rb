@@ -14,6 +14,12 @@ class User < ApplicationRecord
    has_many(:games, :through => :libraries)
    has_many :owned_games, :through => :libraries, :source => :game
 
+   acts_as_messageable
+
+   def mailboxer_email(object)
+      #return the model's email here
+   end
+
    def self.find_for_oauth(auth, signed_in_resource = nil)
 
       # Get the identity and user if they exist

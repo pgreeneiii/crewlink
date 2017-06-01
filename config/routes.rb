@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks'}
   get 'gamers/index'
   root to: 'libraries#index'
+
+  resources :conversations, only: [:index, :show, :destroy]
+  resources :messages, only: [:new, :create]
+
   #post 'auth/steam/callback' => 'gamers#auth_callback'
 
   match 'users/:id/finish_signup' => 'users#finish_signup', via: [:get, :patch], :as => :finish_signup
@@ -46,22 +50,6 @@ Rails.application.routes.draw do
   get "/delete_game/:id", :controller => "games", :action => "destroy"
   #------------------------------
 
-  # Routes for the Message resource:
-  # CREATE
-  get "/messages/new", :controller => "messages", :action => "new"
-  post "/create_message", :controller => "messages", :action => "create"
-
-  # READ
-  get "/messages", :controller => "messages", :action => "index"
-  get "/messages/:id", :controller => "messages", :action => "show"
-
-  # UPDATE
-  get "/messages/:id/edit", :controller => "messages", :action => "edit"
-  post "/update_message/:id", :controller => "messages", :action => "update"
-
-  # DELETE
-  get "/delete_message/:id", :controller => "messages", :action => "destroy"
-  #------------------------------
 
   # Routes for the Friend resource:
   # CREATE

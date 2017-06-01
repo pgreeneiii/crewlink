@@ -13,7 +13,15 @@ gem 'bcrypt', platforms: :ruby
 
 gem 'omniauth-steam'
 
+gem 'bootstrap'
+
+gem 'bootstrap-will_paginate'
+
+gem 'will_paginate'
+
 gem 'mailboxer'
+
+gem 'gravatar_image_tag'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.3'
