@@ -30,7 +30,9 @@
         <td><%= library.user.username %></td>
         <td><img src="<%= library.game.img_url %>"></td>
         <td><%= library.game.title %></td>
-        <td><%= library.default_looking_to_play_status %></td>
+        <td>
+           <input type="checkbox" value="<%= library.default_looking_to_play_status %>" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
+        </td>
         <td>
           <a href="/libraries/<%= library.id %>" class="btn btn-primary">Show</a>
           <a href="/libraries/<%= library.id %>/edit" class="btn btn-warning">Edit</a>
