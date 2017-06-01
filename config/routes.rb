@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   # UPDATE
   get "/libraries/:id/edit", :controller => "libraries", :action => "edit"
   post "/update_library/:id", :controller => "libraries", :action => "update"
+  post "/toggle_library_status/:id", :controller => "libraries", :action => "toggle"
 
   # DELETE
   get "/delete_library/:id", :controller => "libraries", :action => "destroy"

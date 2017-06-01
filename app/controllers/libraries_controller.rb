@@ -134,6 +134,26 @@ class LibrariesController < ApplicationController
       end
    end
 
+   def toggle
+      @library = Library.find(params[:id])
+
+      @library.owner_id = params[:owner_id]
+      @library.game_id = params[:game_id]
+
+      if params[:default_looking_to_play_status].nil?
+         params[:default_looking_to_play_status] = false
+      end
+
+      @library.default_looking_to_play_status = params[:default_looking_to_play_status]
+
+      save_status = @library.save
+
+      if save_status == false
+         render("libraries/edit.html.erb")
+      end
+   end
+
+
    def destroy
       @library = Library.find(params[:id])
 
