@@ -17,8 +17,5 @@
 //= require chosen-jquery
 //= require messages
 //= require turbolinks
+//=require turbolinks-compatibility
 //= require_tree .
-
-$(document).on('turbolinks:load', function() {
-   console.log('(document).turbolinks:load')
-});

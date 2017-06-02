@@ -3,7 +3,21 @@ Rails.application.routes.draw do
   get 'gamers/index'
   root to: 'libraries#index'
 
-  resources :conversations, only: [:index, :show, :destroy]
+  resources :conversations, only: [:index, :show, :destroy] do
+     member do
+        post :reply
+     end
+     member do
+        post :restore
+     end
+     collection do
+        delete :empty_trash
+     end
+     member do
+        post :mark_as_read
+     end
+  end
+
   resources :messages, only: [:new, :create]
 
   #post 'auth/steam/callback' => 'gamers#auth_callback'
