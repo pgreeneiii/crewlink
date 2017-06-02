@@ -14,7 +14,9 @@ class User < ApplicationRecord
    has_many(:games, :through => :libraries)
    has_many :owned_games, :through => :libraries, :source => :game
 
-   acts_as_messageable
+   acts_as_messageable # integrates mailboxer gem features
+
+   has_friendship # integrates has_friendship gem features
 
    def mailboxer_email(object)
       #return the model's email here

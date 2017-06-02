@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531184715) do
+ActiveRecord::Schema.define(version: 20170602025634) do
 
   create_table "friends", force: :cascade do |t|
     t.integer  "username_id"
@@ -19,6 +19,16 @@ ActiveRecord::Schema.define(version: 20170531184715) do
     t.boolean  "approval_status"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.string   "friendable_type"
+    t.integer  "friendable_id"
+    t.integer  "friend_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "blocker_id"
+    t.integer  "status"
   end
 
   create_table "gamers", force: :cascade do |t|
