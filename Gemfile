@@ -11,6 +11,10 @@ gem "starter_generators", :git => "https://github.com/raghubetina/starter_genera
 
 gem 'bcrypt', platforms: :ruby
 
+gem 'chosen-rails'
+
+gem 'jquery-turbolinks'
+
 gem 'omniauth-steam'
 
 gem 'bootstrap'

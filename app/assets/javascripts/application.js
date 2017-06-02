@@ -11,6 +11,14 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
+//= require bootstrap-sprockets
+//= require chosen-jquery
+//= require messages
 //= require turbolinks
 //= require_tree .
+
+$(document).on('turbolinks:load', function() {
+   console.log('(document).turbolinks:load')
+});
