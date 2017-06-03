@@ -1,31 +1,62 @@
 <div class="page-header">
   <h1>
-    Friends
-    <a href="/friends/new" class="btn btn-lg btn-success">New Friend</a>
+    Find Your Friends
   </h1>
 </div>
+
+<%= search_form_for(@q, url: "/friends", method: :get) do |f| %>
+   <p class="lead">
+      Search:
+   </p>
+   <div class="form-group">
+      <%= f.label :username_cont, "Username containing" %>
+      <%= f.text_field :username_cont, :class => "form-control", :placeholder => "Enter a few characters" %>
+   </div>
+   <div class="form-group">
+      <%= f.label :first_name_cont, "First name" %>
+      <%= f.text_field :first_name_cont, :class => "form-control", :placeholder => "First name" %>
+   </div>
+   <div class="form-group">
+      <%= f.label :last_name_cont, "Last name" %>
+      <%= f.text_field :last_name_cont, :class => "form-control", :placeholder => "Last name" %>
+   </div>
+   <%= f.submit :class => "btn btn-primary btn-block" %>
+
+   <a href="/friends" class="btn btn-default btn-block">Clear filters</a>
+<% end %>
 
 <div class="row">
   <div class="col-md-12">
     <table class="table table-striped table-hover">
       <tr>
         <th>Username</th>
-        <th>Friend</th>
-        <th>Favorite status</th>
-        <th>Approval status</th>
+        <th>First Name</th>
+        <th>Last Name</th>
         <th>Actions</th>
       </tr>
 
       <% @friends.each do |friend| %>
       <tr>
-        <td><%= friend.username_id %></td>
-        <td><%= friend.friend_id %></td>
-        <td><%= friend.favorite_status %></td>
-        <td><%= friend.approval_status %></td>
+        <td><%= friend.username %></td>
+        <td><%= friend.first_name %></td>
+        <td><%= friend.last_name %></td>
         <td>
-          <a href="/friends/<%= friend.id %>" class="btn btn-primary">Show</a>
-          <a href="/friends/<%= friend.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_friend/<%= friend.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+           <% if current_user.friends_with?(friend) %>
+               <form action="/remove_friend/<%= friend.id %>" method="post">
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+                  <button class="btn btn-danger">
+                    Remove Friend
+                  </button>
+               </form>
+
+             <% else %>
+                <form action="/add_friend/<%= friend.id %>" method="post">
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+                  <button class="btn btn-success">
+                    Add Friend
+                  </button>
+               </form>
+             <% end %>
         </td>
       </tr>
       <% end %>

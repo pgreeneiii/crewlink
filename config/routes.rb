@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   # CREATE
   get "/friends/new", :controller => "friends", :action => "new"
   post "/create_friend", :controller => "friends", :action => "create"
+  post "/add_friend/:id", :controller => "friends", :action => "add_friend"
 
   # READ
   get "/friends", :controller => "friends", :action => "index"
@@ -80,6 +81,7 @@ Rails.application.routes.draw do
 
   # DELETE
   get "/delete_friend/:id", :controller => "friends", :action => "destroy"
+  post "/remove_friend/:id", :controller => "friends", :action => "remove_friend"
   #------------------------------
 
   # Routes for the Gamer resource:

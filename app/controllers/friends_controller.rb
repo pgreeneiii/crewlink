@@ -1,8 +1,23 @@
 class FriendsController < ApplicationController
   def index
-    @friends = Friend.all
+    @q = User.ransack(params[:q])
+    @friends = @q.result
 
     render("friends/index.html.erb")
+  end
+
+  def add_friend
+     friend = User.find_by(:id => params[:id])
+     current_user.friend_request(friend)
+
+     flash[:success] = "Friend request sent!")
+  end
+
+  def remove_friend
+     friend = User.find_by(:id => params[:id])
+     current_user.remove_friend(friend)
+
+     flash[:success] = "Friend removed"
   end
 
   def show
