@@ -73,6 +73,7 @@ Rails.application.routes.draw do
 
   # READ
   get "/friends", :controller => "friends", :action => "index"
+  get "/find_friends", :controller => "friends", :action => "find_friends"
   get "/friends/:id", :controller => "friends", :action => "show"
 
   # UPDATE
