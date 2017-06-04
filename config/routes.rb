@@ -69,7 +69,7 @@ Rails.application.routes.draw do
   # CREATE
   get "/friends/new", :controller => "friends", :action => "new"
   post "/create_friend", :controller => "friends", :action => "create"
-  post "/add_friend/:id", :controller => "friends", :action => "add_friend"
+  post "/add_friend", :controller => "friends", :action => "add_friend"
 
   # READ
   get "/friends", :controller => "friends", :action => "index"
