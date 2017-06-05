@@ -11,6 +11,8 @@ class User < ApplicationRecord
    validates_format_of :email, :without => TEMP_EMAIL_REGEX, on: :update
 
    has_many(:libraries, :class_name => "Library", :foreign_key => "owner_id", :dependent => :destroy)
+   has_many(:requests, :class_name => "Request", :foreign_key => "uid")
+   has_many(:pending_requests, :class_name => "Request", :foreign_key => "sender_id")
    has_many(:games, :through => :libraries)
    has_many :owned_games, :through => :libraries, :source => :game
 

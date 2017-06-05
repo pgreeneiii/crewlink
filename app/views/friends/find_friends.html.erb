@@ -41,12 +41,8 @@
                         Request Pending
                      </button>
                   <% else %>
-                   <form action="/add_friend" method="post">
+                   <form action="/send_request" method="post">
                      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-
-                     <input type="hidden" name="message[subject]" value="<%= current_user.username %> sent you a friend request!">
-
-                     <input type="hidden" name="message[body]" value="Accept friend request?">
 
                      <input type="hidden" name="id" value="<%= friend.id %>">
 

@@ -1,5 +1,4 @@
 class LibrariesController < ApplicationController
-   before_action :ensure_signup_complete
 
    def load
       if current_user.steam_uid != nil #Steam_username has to exist to call API

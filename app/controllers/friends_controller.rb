@@ -11,28 +11,7 @@ class FriendsController < ApplicationController
 
      render("friends/find_friends.html.erb")
   end
-
-  def add_friend
-     friend = User.find_by(:id => params[:id])
-     if current_user.friend_request(friend)
-        conversation = current_user.send_message(friend, params[:message][:body], params[:message][:subject]).conversation
-        flash[:success] = "Friend request has been sent!"
-     else
-        flash[:alert] = "You have already sent this friend a request."
-     end
-     redirect_to(:back)
-  end
-
-  def remove_friend
-     friend = User.find_by(:id => params[:id])
-     if current_user.remove_friend(friend)
-        flash[:alert] = "Friendship over."
-     else
-        flash[:alert] = "There was an error ending this friendship."
-     end
-     redirect_to(:back)
-  end
-
+  
   def show
     @friend = Friend.find(params[:id])
 
