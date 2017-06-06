@@ -1,0 +1,27 @@
+<% page_header "Dashboard:" %>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped table-hover">
+      <tr>
+        <th>Username</th>
+        <th>Online Status</th>
+        <th>In-Game Status</th>
+        <th>Looking to play status</th>
+      </tr>
+
+      <% @friends.each do |friend| %>
+      <tr>
+        <td><%= friend.username %></td>
+        <td><%= friend.online_status %></td>
+        <% if friend.in_game_status > 0 %>
+        <td><%= Game.find_by(:app_id => friend.in_game_status).title %></td>
+        <% else %>
+        <td>Unavailable</td>
+        <% end %>
+        <td><%= friend.looking_to_play_status %></td>
+     </tr>
+     <% end %>
+   </table>
+</div>
+</div>

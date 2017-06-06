@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks'}
   get 'gamers/index'
-  root to: 'libraries#index'
+  root to: 'dashboards#index'
 
   resources :conversations, only: [:index, :show, :destroy] do
      member do
@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   end
 
   resources :messages, only: [:new, :create]
+  resources :dashboards, only: [:index]
 
   #post 'auth/steam/callback' => 'gamers#auth_callback'
 

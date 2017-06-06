@@ -2,6 +2,7 @@ class Game < ApplicationRecord
 
    has_many(:libraries, :class_name => "Library", :foreign_key => "game_id", :dependent => :destroy)
    has_many(:gamers, :through => :libraries)
+   belongs_to(:player, :class_name => "User", :foreign_key => "in_game_status")
 
    def needs_refresh?
       value = false
