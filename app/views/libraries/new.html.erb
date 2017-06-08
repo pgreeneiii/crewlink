@@ -33,7 +33,15 @@
           Game
         </label>
 
-        <input type="text" id="game_id" name="game_id" placeholder="Game" class="form-control" value="<%= @library.game_id %>">
+        <%= select_tag(:game_id, options_from_collection_for_select(Game.all, :id, :title, @library.game_id), :class => "form-control") %>
+      </div>
+
+      <div class="form-group">
+        <label for="game_id" class="control-label">
+          Owned Games
+        </label>
+
+        <%= select_tag(:game_id, options_from_collection_for_select(current_user.owned_games, :id, :title, @library.game_id), :class => "form-control") %>
       </div>
 
       <!-- Label and input for default_looking_to_play_status -->

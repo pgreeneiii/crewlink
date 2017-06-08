@@ -32,6 +32,9 @@ class UsersController < ApplicationController
          if @user.update(user_params)
             #@user.skip_reconfirmation!
             bypass_sign_in(@user)
+
+            @user.refresh_library
+
             redirect_to root_url, notice: 'Your profile was successfully updated.'
          else
             @show_errors = true
