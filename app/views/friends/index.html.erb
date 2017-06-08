@@ -1,0 +1,22 @@
+<% page_header "Find your friends:" %>
+
+<%= search_form_for(@q, url: "/find_friends", method: :get) do |f| %>
+   <p class="lead">
+      Search:
+   </p>
+   <div class="form-group">
+      <%= f.label :username_cont, "Username containing" %>
+      <%= f.text_field :username_cont, :class => "form-control", :placeholder => "Enter a few characters" %>
+   </div>
+   <div class="form-group">
+      <%= f.label :first_name_cont, "First name" %>
+      <%= f.text_field :first_name_cont, :class => "form-control", :placeholder => "First name" %>
+   </div>
+   <div class="form-group">
+      <%= f.label :last_name_cont, "Last name" %>
+      <%= f.text_field :last_name_cont, :class => "form-control", :placeholder => "Last name" %>
+   </div>
+   <%= f.submit :class => "btn btn-primary btn-block" %>
+
+   <a href="/friends" class="btn btn-default btn-block">Clear filters</a>
+<% end %>

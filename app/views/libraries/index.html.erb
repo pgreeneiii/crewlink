@@ -1,0 +1,68 @@
+<% page_header "Your Library:" %>
+<div class="page-header">
+   <h1>
+      <a href="/libraries/new" class="btn btn-lg btn-success">New Library</a>
+   </h1>
+</div>
+
+<form action="/load_library" method="get">
+   <!-- Hidden input for authenticity token to protect from forgery -->
+   <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+   <button class="btn btn-success">
+      Refresh Library
+   </button>
+</form>
+
+<div class="row">
+   <div class="col-md-12">
+      <table class="table table-striped table-hover">
+         <tr>
+            <th>Owner</th>
+            <th>Image</th>
+            <th>Game</th>
+            <th>Default looking to play status</th>
+         </tr>
+
+         <% @libraries.each do |library| %>
+         <tr>
+            <td><%= library.user.username %></td>
+            <td><img src="<%= library.game.img_url %>"></td>
+            <td><%= library.game.title %></td>
+            <td>
+               <form id="form_<%= library.id %>" action="/toggle_library_status/<%= library.id %>" method="post">
+                  <!-- Hidden input for authenticity token to protect from forgery -->
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+                  <input name="owner_id" type="hidden" value="<%= library.owner_id %>">
+
+                  <input name="game_id" type="hidden" value="<%= library.game_id %>">
+
+                  <% if library.default_looking_to_play_status? %>
+
+                  <!-- <input name="default_looking_to_play_status" type="checkbox" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150"> -->
+                  <%= hidden_field_tag :status, '' %>
+                  <input name="default_looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#form_<%= library.id %>').submit();" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
+
+                  <% else %>
+
+                  <!-- <input name="default_looking_to_play_status" type="checkbox" data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150"> -->
+                  <input name="default_looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#form_<%= library.id %>').submit();" data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
+
+                  <% end %>
+
+                  <!-- <script type="text/javascript">
+                  $(function(){
+                     $('.checkbox').on('change',function(){
+                        $("[id^='form_']").submit();
+                     });
+                  });
+                  </script> -->
+
+               </form>
+            </td>
+         </tr>
+         <% end %>
+      </table>
+   </div>
+</div>

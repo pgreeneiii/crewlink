@@ -1,0 +1,38 @@
+<% page_header "Games:" %>
+
+<form action="/refresh_games" method="get">
+  <!-- Hidden input for authenticity token to protect from forgery -->
+  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+  <button class="btn btn-success">
+    Refresh Games
+  </button>
+</form>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped table-hover">
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Developer</th>
+        <th>Multiplayer status</th>
+        <th>Actions</th>
+      </tr>
+
+      <% @games.each do |game| %>
+      <tr>
+        <td><img src="<%= game.img_url %>"></td>
+        <td><%= game.title %></td>
+        <td><%= game.developer %></td>
+        <td><%= game.multiplayer_status %></td>
+        <td>
+          <a href="/games/<%= game.id %>" class="btn btn-primary">Show</a>
+          <a href="/games/<%= game.id %>/edit" class="btn btn-warning">Edit</a>
+          <a href="/delete_game/<%= game.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
