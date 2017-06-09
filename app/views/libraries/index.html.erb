@@ -40,24 +40,13 @@
 
                   <% if library.default_looking_to_play_status? %>
 
-                  <!-- <input name="default_looking_to_play_status" type="checkbox" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150"> -->
-                  <%= hidden_field_tag :status, '' %>
                   <input name="default_looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#form_<%= library.id %>').submit();" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
 
                   <% else %>
 
-                  <!-- <input name="default_looking_to_play_status" type="checkbox" data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150"> -->
                   <input name="default_looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#form_<%= library.id %>').submit();" data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
 
                   <% end %>
-
-                  <!-- <script type="text/javascript">
-                  $(function(){
-                     $('.checkbox').on('change',function(){
-                        $("[id^='form_']").submit();
-                     });
-                  });
-                  </script> -->
 
                </form>
             </td>

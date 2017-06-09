@@ -1,17 +1,17 @@
 class FriendsController < ApplicationController
-  def index
-    @q = User.ransack(params[:q])
 
+  def index
+
+     @friends = current_user.friends
     render("friends/index.html.erb")
   end
 
   def find_friends
-     @q = User.ransack(params[:q])
      @friends = @q.result
 
      render("friends/find_friends.html.erb")
   end
-  
+
   def show
     @friend = Friend.find(params[:id])
 

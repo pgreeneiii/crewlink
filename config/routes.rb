@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks'}
+  devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks', registrations: 'registrations'}
   get 'gamers/index'
   root to: 'dashboards#index'
 
@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
   resources :messages, only: [:new, :create]
   resources :dashboards, only: [:index]
+  post "/change_status", :controller => "dashboards", :action => "change_status"
 
   #post 'auth/steam/callback' => 'gamers#auth_callback'
 

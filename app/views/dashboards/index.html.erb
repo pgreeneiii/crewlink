@@ -1,51 +1,98 @@
 <% page_header "Dashboard:" %>
 
 <div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>Username</th>
-        <th>Last Played Game</th>
-        <th>Online Status</th>
-        <th>In-Game Status</th>
-        <th>Looking to play status</th>
-      </tr>
+   <div class="col-md-offset-1 col-md-5">
+      <div>
+         <p>
+            <%= current_user.username %>
+            <% if current_user.online_status %>
+            <i class="fa fa-circle" aria-hidden="true" style="color:#66ff33;"></i>
+            <% else %>
+            <i class="fa fa-circle" aria-hidden="true" style="color:red;"></i>
+            <% end %>
+         </p>
+      </div>
 
-      <tr>
-        <th><%= current_user.username %></th>
-        <% if current_user.last_played_game.nil? %>
-         <th>Data Unavailable</th>
-        <% else %>
-        <th><%= Game.find_by(:app_id => current_user.last_played_game).title %></th>
-        <% end %>
-        <th><%= current_user.online_status %></th>
-        <% if current_user.in_game_status.nil? %>
-        <td>Welcome to Crewlink!</td>
-        <% elsif current_user.in_game_status > 0 %>
-        <td><%= Game.find_by(:app_id => current_user.in_game_status).title %></td>
-        <% else %>
-        <td>Not In Game</td>
-        <% end %>
-        <th><%= current_user.looking_to_play_status %></th>
-      </tr>
+      <div>
+         <p>Last Played Game</p>
 
-      <% @friends.each do |friend| %>
-      <tr>
-        <td><%= friend.username %></td>
-        <% if friend.last_played_game.nil? %>
-         <th>Data Unavailable</th>
-        <% else %>
-        <th><%= Game.find_by(:app_id => friend.last_played_game).title %></th>
-        <% end %>
-        <td><%= friend.online_status %></td>
-        <% if friend.in_game_status > 0 %>
-        <td><%= Game.find_by(:app_id => friend.in_game_status).title %></td>
-        <% else %>
-        <td>Not In Game</td>
-        <% end %>
-        <td><%= friend.looking_to_play_status %></td>
-     </tr>
-     <% end %>
-   </table>
-</div>
+         <% if current_user.last_played_game.nil? %>
+         <p>Data Unavailable</p>
+         <% else %>
+         <div>
+            <img src="<%= Game.find_by(:app_id => current_user.last_played_game).img_url %>" class="dashboard-img">
+         </div>
+         <% end %>
+      </div>
+
+      <div>
+         <p>Currently Playing</p>
+         <% if current_user.in_game_status.nil? %>
+         Data Unavailable
+         <% elsif current_user.in_game_status == 0 %>
+         Not In Game
+         <% else %>
+         <img src="<%= Game.find_by(:app_id => current_user.in_game_status).img_url %>" class="dashboard-img">
+         <% end %>
+      </div>
+      <div>
+      Looking to play status:
+      <form id="change_status" action="/change_status" method="post">
+         <!-- Hidden input for authenticity token to protect from forgery -->
+         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+         <% if current_user.in_game_status != nil && current_user.in_game_status > 0 %>
+            <input name="game_id" type="hidden" value="<%= current_user.owned_games.find_by(:app_id => current_user.in_game_status).id %>">
+         <% end %>
+
+         <% if current_user.looking_to_play_status %>
+            <input name="looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#change_status').submit();" checked data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
+         <% else %>
+            <input name="looking_to_play_status" type="checkbox" class="checkbox" onchange="$('#change_status').submit();" data-toggle="toggle" data-onstyle="warning" data-offstyle="info" data-on="Looking for Crew" data-off="Playing Solo" data-width="150">
+         <% end %>
+
+      </form>
+
+      </div>
+   </div>
+
+   <div class="col-md-5">
+      <table class="table table-striped table-hover">
+         <tr>
+            <th>Username</th>
+            <th>Last Played Game</th>
+            <th>In-Game Status</th>
+            <th>Looking to play status</th>
+         </tr>
+
+         <% @friends.each do |friend| %>
+         <tr>
+            <td>
+               <%= friend.username %>
+               <% if friend.online_status %>
+               <i class="fa fa-circle fa-pull-left" aria-hidden="true" style="color:#66ff33;"></i>
+               <% else %>
+               <i class="fa fa-circle fa-pull-left" aria-hidden="true" style="color:red;"></i>
+               <% end %>
+            </td>
+            <% if friend.last_played_game.nil? %>
+            <th>Data Unavailable</th>
+            <% else %>
+            <th><img src="<%= Game.find_by(:app_id => friend.last_played_game).img_url %>" class="dashboard-img"></th>
+            <% end %>
+            <% if friend.in_game_status > 0 %>
+            <td><img src="<%= Game.find_by(:app_id => friend.in_game_status).img_url %>" class="dashboard-img"></td>
+            <% else %>
+            <td>Not In Game</td>
+            <% end %>
+
+            <% if friend.looking_to_play_status %>
+            <td><i class="fa fa-users fa-2x" aria-hidden="true"></i></td>
+            <% else %>
+            <td><i class="fa fa-user fa-2x" aria-hidden="true"></i></td>
+            <% end %>
+         </tr>
+         <% end %>
+      </table>
+   </div>
 </div>
