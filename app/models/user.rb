@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
    #Friendships & Preferred Friends
    has_friendship # integrates has_friendship gem features
-   has_many(:preferred_friendships, :class_name => "PreferredFriend", :foreign_key => "user_id")
+   has_many(:preferred_friendships, :class_name => "PreferredFriend", :foreign_key => "user_id", :dependent => :destroy)
    has_many :preferred_friends, :through => :preferred_friendships, :source => :preferred
 
    def mailboxer_email(object)

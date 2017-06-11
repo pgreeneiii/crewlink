@@ -53,8 +53,8 @@
                   </a>
                </li>
                <li><a href="/conversations"><i class="fa fa-comments-o" aria-hidden="true"></i> My Conversations</a></li>
-               <% end %>
                <li><a href="/friends"><i class="fa fa-users" aria-hidden="true"></i> My Friends</a></li>
+            <% end %>
 
                <div class="search">
                   <%= search_form_for(@q, url: "/find_friends", method: :get) do |f| %>

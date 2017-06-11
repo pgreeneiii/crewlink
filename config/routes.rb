@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => {omniauth_callbacks: 'omniauth_callbacks', registrations: 'registrations'}
-  get 'gamers/index'
+
   root to: 'dashboards#index'
 
   resources :conversations, only: [:index, :show, :destroy] do
