@@ -40,7 +40,32 @@
                <% end %>
             </td>
             <td>
-               
+
+               <% if current_user.preferred_friends.find_by(:id => friend.id).present? %>
+               <form id="end_preferred" action="/end_preferred" method="post">
+                  <!-- Hidden input for authenticity token to protect from forgery -->
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+                  <input name="id" type="hidden" value="<%= friend.id %>">
+
+                  <button class="fabutton">
+                     <i class="fa fa-star" aria-hidden="true"></i>
+                  </button>
+               </form>
+
+               <% else %>
+               <form id="make_preferred" action="/make_preferred" method="post">
+                  <!-- Hidden input for authenticity token to protect from forgery -->
+                  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+                  <input name="id" type="hidden" value="<%= friend.id %>">
+
+                  <button class="fabutton" type="submit">
+                     <i class="fa fa-star-o" aria-hidden="true"></i>
+                  </button>
+               </form>
+               <% end %>
+
             <% if current_user.friends_with?(friend) %>
                 <form action="/remove_friend/<%= friend.id %>" method="post">
                    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
