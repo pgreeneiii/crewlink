@@ -39,6 +39,13 @@ before_action :get_requests, except: [:accept_request, :send_request, :remove_fr
 
    def remove_friend
       friend = User.find_by(:id => params[:id])
+
+      preferred_friend = current_user.preferred_friendships.find_by(:friend_id => params[:id])
+
+      if preferred_friend.nil? == false
+         preferred_friend.destroy
+      end
+
       if current_user.remove_friend(friend)
          flash[:alert] = "Friendship over."
       else
