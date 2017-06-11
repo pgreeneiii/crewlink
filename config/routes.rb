@@ -22,25 +22,18 @@ Rails.application.routes.draw do
   resources :dashboards, only: [:index]
   post "/change_status", :controller => "dashboards", :action => "change_status"
 
-  #post 'auth/steam/callback' => 'gamers#auth_callback'
 
   match 'users/:id/finish_signup' => 'users#finish_signup', via: [:get, :patch], :as => :finish_signup
 
   # Routes for the Library resource:
   # CREATE
-
-  #get("/", {:controller => "gamers", :action => "index"})
-
-  get "/libraries/new", :controller => "libraries", :action => "new"
   get("/load_library", {:controller => "libraries", :action => "load"})
   post "/create_library", :controller => "libraries", :action => "create"
 
   # READ
   get "/libraries", :controller => "libraries", :action => "index"
-  get "/libraries/:id", :controller => "libraries", :action => "show"
 
   # UPDATE
-  get "/libraries/:id/edit", :controller => "libraries", :action => "edit"
   post "/update_library/:id", :controller => "libraries", :action => "update"
   post "/toggle_library_status/:id", :controller => "libraries", :action => "toggle"
 
@@ -48,7 +41,7 @@ Rails.application.routes.draw do
   get "/delete_library/:id", :controller => "libraries", :action => "destroy"
   #------------------------------
 
-  # Routes for the Game resource:
+  # Routes for the Game resource (SHOULD BE ADMIN ONLY):
   # CREATE
   get "/games/new", :controller => "games", :action => "new"
   get("/refresh_games", {:controller => "games", :action => :refresh})
@@ -68,37 +61,14 @@ Rails.application.routes.draw do
 
 
   # Routes for the Friend resource:
-  # CREATE
+  # EDIT
   post "/make_preferred", :controller => "friends", :action => "make_preferred"
   post "/end_preferred", :controller => "friends", :action => "end_preferred"
-
 
   # READ
   get "/friends", :controller => "friends", :action => "index"
   get "/find_friends", :controller => "friends", :action => "find_friends"
 
-  # UPDATE
-
-
-  # DELETE
-
-  #------------------------------
-
-  # Routes for the Gamer resource:
-  # CREATE
-  get "/gamers/new", :controller => "gamers", :action => "new"
-  post "/create_gamer", :controller => "gamers", :action => "create"
-
-  # READ
-  get "/gamers", :controller => "gamers", :action => "index"
-  get "/gamers/:id", :controller => "gamers", :action => "show"
-
-  # UPDATE
-  get "/gamers/:id/edit", :controller => "gamers", :action => "edit"
-  post "/update_gamer/:id", :controller => "gamers", :action => "update"
-
-  # DELETE
-  get "/delete_gamer/:id", :controller => "gamers", :action => "destroy"
   #------------------------------
 
   get "/requests/index", :controller => "requests", :action => "index"

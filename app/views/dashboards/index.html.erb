@@ -61,41 +61,46 @@
 
    <div class="col-md-offset-1 col-md-5">
       <% @friends.each do |friend| %>
-      <div class="panel panel-default">
-         <div class="panel panel-heading">
-            <%= friend.username %>
-            <% if friend.online_status %>
-               <i class="fa fa-circle fa-pull-right" aria-hidden="true" style="color:#66ff33;"></i>
-            <% else %>
-               <i class="fa fa-circle fa-pull-right" aria-hidden="true" style="color:red;"></i>
-            <% end %>
-         </div>
-
-         <div class="row">
-            <div class="col-md-4">
-               <% if friend.last_played_game.nil? %>
-                  Data Unavailable
-               <% else %>
-                  <img src="<%= Game.find_by(:app_id => friend.last_played_game).img_url %>" class="dashboard-img">
-               <% end %>
+      <% if friend.online_status %>
+            <div class="panel panel-heading">
+               <table class="online-status-table">
+                  <tr>
+                     <td class="text-td">
+                        <%= friend.username %>
+                     </td>
+                     <td class="text-td">
+                        <span class="text-muted">
+                        <% if friend.in_game_status > 0 %>
+                           Playing <%= Game.find_by(:app_id => friend.in_game_status).title %>
+                        <% else %>
+                           Not In Game
+                        <% end %>
+                        </span>
+                     </td>
+                     <td class="user-status-td">
+                        <% if friend.looking_to_play_status %>
+                           <i class="fa fa-users fa-lg" aria-hidden="true"></i>
+                        <% else %>
+                           <i class="fa fa-user fa-lg" aria-hidden="true"></i>
+                        <% end %>
+                     </td>
+                     <td class="user-status-td">
+                        <i class="fa fa-circle fa-pull-right" aria-hidden="true" style="color:#66ff33;"></i>
+                     </td>
+                  </tr>
+                  </table>
             </div>
-
-            <div class="col-md-4">
-               <% if friend.in_game_status > 0 %>
-                  <img src="<%= Game.find_by(:app_id => friend.in_game_status).img_url %>" class="dashboard-img">
-               <% else %>
-                  Not In Game
-               <% end %>
-            </div>
-            <div class="col-md-4">
-               <% if friend.looking_to_play_status %>
-                  <i class="fa fa-users fa-2x" aria-hidden="true"></i>
-               <% else %>
-                  <i class="fa fa-user fa-2x" aria-hidden="true"></i>
-               <% end %>
-            </div>
-         </div>
+      <% else %>
+      <div class="panel panel-heading">
+         <%= friend.username %>
+         <i class="fa fa-circle fa-pull-right" aria-hidden="true" style="color:red;"></i>
+         <% if friend.last_played_game.nil? == false %>
+               <small class="text-muted">
+                  Last Played Game: <%= Game.find_by(:app_id => friend.last_played_game).title %>
+               </small>
+         <% end %>
       </div>
+      <% end %>
 
       <% end %>
 

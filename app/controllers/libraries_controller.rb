@@ -1,9 +1,11 @@
 class LibrariesController < ApplicationController
 
    def load
-      current_user.refresh_library
-
-      flash[:notice] = "Your library is up to date."
+      if current_user.refresh_library
+         flash[:notice] = "Your library is up to date."
+      else
+         flash[:alert] = "Cannot load library. Please ensure your Steam account is public."
+      end
       redirect_back(fallback_location: root_path)
    end
 
@@ -12,18 +14,6 @@ class LibrariesController < ApplicationController
       @libraries = current_user.libraries
 
       render("libraries/index.html.erb")
-   end
-
-   def show
-      @library = Library.find(params[:id])
-
-      render("libraries/show.html.erb")
-   end
-
-   def new
-      @library = Library.new
-
-      render("libraries/new.html.erb")
    end
 
    def create
@@ -40,12 +30,6 @@ class LibrariesController < ApplicationController
       else
          render("libraries/new.html.erb")
       end
-   end
-
-   def edit
-      @library = Library.find(params[:id])
-
-      render("libraries/edit.html.erb")
    end
 
    def update
@@ -89,7 +73,6 @@ class LibrariesController < ApplicationController
          head :no_content
       end
    end
-
 
    def destroy
       @library = Library.find(params[:id])

@@ -34,6 +34,9 @@
    padding: 0px;
    border: none;
 }
+.fabutton-remove {
+   color: rgb(204,51,0);
+}
 
 .toggle {
    margin: 8% 0 8% 0;
@@ -49,3 +52,29 @@
    text-align: center;
    margin: 10% 0 10% 0;
 }
+
+.online-dashboard {
+   text-align: center;
+   margin: 5% 5% 5% 0;
+   padding-right: 10px;
+}
+
+.online-status-table {
+   table-layout: fixed;
+   width: 100%;
+   background-color: rgba(0,0,0,0);
+}
+
+.text-td {
+   text-align: left;
+   width: 40%;
+}
+
+.user-status-td {
+   text-align: center;
+   width: 10%;
+}
+
+// * {
+//    outline: 1px solid red;
+// }

@@ -9,24 +9,28 @@ class User < ApplicationRecord
 
    validates_format_of :email, :without => TEMP_EMAIL_REGEX, on: :update
 
+   # ASSOCIATIONS
+   #Games and Libraries
    has_many(:libraries, :class_name => "Library", :foreign_key => "owner_id", :dependent => :destroy)
+   has_many :owned_games, :through => :libraries, :source => :game
 
+   #Messages
+   acts_as_messageable # integrates mailboxer gem features
+
+   #Friend Requests
    has_many(:requests, :class_name => "Request", :foreign_key => "uid")
    has_many(:pending_requests, :class_name => "Request", :foreign_key => "sender_id")
 
+   #Friendships & Preferred Friends
+   has_friendship # integrates has_friendship gem features
    has_many(:preferred_friendships, :class_name => "PreferredFriend", :foreign_key => "user_id")
    has_many :preferred_friends, :through => :preferred_friendships, :source => :preferred
-
-   has_many :owned_games, :through => :libraries, :source => :game
-
-   acts_as_messageable # integrates mailboxer gem features
-
-   has_friendship # integrates has_friendship gem features
 
    def mailboxer_email(object)
       #return the model's email here
    end
 
+   # find_for_oauth used to authorize users that sign-up through STEAM
    def self.find_for_oauth(auth, signed_in_resource = nil)
 
       # Get the identity and user if they exist
@@ -71,79 +75,99 @@ class User < ApplicationRecord
       user
    end
 
+   # Use email_verified to make sure that users verify their email before accessing any of the site. This is helps make sure that Devise+Oauth continue to work properly together
    def email_verified?
       self.email && self.email !~ TEMP_EMAIL_REGEX
    end
 
+
+   # refresh_library does an API call to check if the user has added any games from their Steam Library and adds them to the site if this is the case
    def refresh_library
+
       if self.steam_uid != nil #Steam_username has to exist to call API
-         games = Steam::Player.owned_games(self.steam_uid)["games"]
 
-         games.each do |game|
-            if Game.where(:app_id => game["appid"]).exists?
-               # Pull Game ID from database by Steam App ID
-               game_id = Game.where(:app_id => game["appid"]).pluck(:id)[0]
+         #Call owned games using Steam API
+         url = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=#{ENV["STEAM_WEB_API_KEY"]}&include_played_free_games=1&format=json&steamid=#{self.steam_uid}"
 
-               if self.libraries.find_by(:game_id => game_id).present? == false
-                  # Pull multiplayer status from game database
-                  multiplayer_status = Game.find_by(:id => game_id).multiplayer_status
+         raw_data = open(url).read
+         parsed_data = JSON.parse(raw_data)
+         games = parsed_data["response"]["games"]
 
-                  # Build library entry
-                  library = Library.new
-                  library.owner_id = self.id
-                  library.game_id = game_id
-                  library.default_looking_to_play_status = multiplayer_status
+         # Check if player doesn't own any games or profile is set to private
+         if games.nil? == false
 
-                  library.save
-               end
-            else
-               app_id = game["appid"].to_s
-               url = "http://store.steampowered.com/api/appdetails?appids=#{app_id}"
-               raw_data = open(url).read
-               parsed_data = JSON.parse(raw_data)[app_id]
-               success = parsed_data["success"]
+            #Run through every owned game
+            games.each do |game|
 
-               # Some App IDs no longer work (Steam has deleted data), so must test for success value of true
-               if success == true
-                  new_game = Game.new
-                  app_id = game["appid"]
-                  title = parsed_data["data"]["name"]
-                  developer = parsed_data["data"]["developers"]
-                  img_url = parsed_data["data"]["header_image"]
-                  multiplayer_status = 0
+               # Check if game already exists in Crewlink database
+               if Game.where(:app_id => game["appid"]).exists?
+                  # Pull Game ID from database by Steam App ID
+                  game_id = Game.where(:app_id => game["appid"]).pluck(:id)[0]
 
-                  categories = parsed_data["data"]["categories"]
+                  # Check if game is already in user's library
+                  if self.libraries.find_by(:game_id => game_id).present? == false
+                     # Pull multiplayer status from game database
+                     multiplayer_status = Game.find_by(:id => game_id).multiplayer_status
 
-                  if categories.class == Array
+                     # Build library entry
+                     library = Library.new
+                     library.owner_id = self.id
+                     library.game_id = game_id
+                     library.default_looking_to_play_status = multiplayer_status
 
-                     categories.each do |type|
-                        if type["id"] == 1
-                           multiplayer_status = 1
-                        end
-                     end
+                     library.save
                   end
 
-                  # Build game entry
-                  new_game.app_id = app_id
-                  new_game.title = title
-                  new_game.developer = developer
-                  new_game.multiplayer_status = multiplayer_status
-                  new_game.img_url = img_url
+               # Game not in database, so need to create game entry and library entry
+               else
+                  app_id = game["appid"].to_s
+                  url = "http://store.steampowered.com/api/appdetails?appids=#{app_id}"
+                  raw_data = open(url).read
+                  parsed_data = JSON.parse(raw_data)[app_id]
+                  success = parsed_data["success"]
 
-                  new_game.save
+                  # Some App IDs no longer work (Steam has deleted data), so must test for success value of true
+                  if success == true
+                     new_game = Game.new
+                     app_id = game["appid"]
+                     title = parsed_data["data"]["name"]
+                     developer = parsed_data["data"]["developers"]
+                     img_url = parsed_data["data"]["header_image"]
+                     multiplayer_status = 0
 
-                  # Build library entry
-                  library = Library.new
-                  library.owner_id = self.id
-                  library.game_id = new_game.id
-                  library.default_looking_to_play_status = new_game.multiplayer_status
+                     categories = parsed_data["data"]["categories"]
 
-                  library.save
+                     if categories.class == Array
+
+                        categories.each do |type|
+                           if type["id"] == 1
+                              multiplayer_status = 1
+                           end
+                        end
+                     end
+
+                     # Build game entry
+                     new_game.app_id = app_id
+                     new_game.title = title
+                     new_game.developer = developer
+                     new_game.multiplayer_status = multiplayer_status
+                     new_game.img_url = img_url
+
+                     new_game.save
+
+                     # Build library entry
+                     library = Library.new
+                     library.owner_id = self.id
+                     library.game_id = new_game.id
+                     library.default_looking_to_play_status = new_game.multiplayer_status
+
+                     library.save
+                     response = 0
+                     response
+                  end
                end
             end
          end
-      else
-         flash[:alert] = "You have not linked your Steam account."
       end
    end
 end

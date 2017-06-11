@@ -4,55 +4,57 @@
      <div class="col-md-12">
        <table class="table table-striped table-hover">
          <tr>
-           <th>Username</th>
-           <th>First Name</th>
-           <th>Last Name</th>
            <th>Actions</th>
+           <th>Username</th>
+           <th>Name</th>
          </tr>
 
          <% @friends.each do |friend| %>
          <tr>
-           <td><%= friend.username %></td>
-           <td><%= friend.first_name %></td>
-           <td><%= friend.last_name %></td>
-           <td>
+            <td>
               <% if current_user.friends_with?(friend) %>
-                  <form action="/remove_friend/<%= friend.id %>" method="post">
-                     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-                     <button class="btn btn-danger">
-                       Remove Friend
-                     </button>
-                  </form>
-                <% else %>
-                  <% check = false %>
-                  <% current_user.pending_friends.each do |request| %>
-                     <% if friend.id == request.id %>
+                   <form action="/remove_friend/<%= friend.id %>" method="post">
+                      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+                      <button class="fabutton">
+                       <i class="fa fa-times" aria-hidden="true"></i>
+                      </button>
+                   </form>
+                 <% else %>
+                   <% check = false %>
+                   <% current_user.pending_friends.each do |request| %>
+                      <% if friend.id == request.id %>
                         <% check = true %>
-                     <% end %>
-                  <% end %>
-                  <% friend.pending_friends.each do |request| %>
-                     <% if current_user.id == request.id %>
+                      <% end %>
+                   <% end %>
+                   <% friend.pending_friends.each do |request| %>
+                      <% if current_user.id == request.id %>
                         <% check = true %>
-                     <% end %>
-                  <% end %>
+                      <% end %>
+                   <% end %>
 
-                  <% if check == true %>
-                     <button class="btn btn-success" disabled="disabled">
-                        Request Pending
-                     </button>
-                  <% else %>
-                   <form action="/send_request" method="post">
-                     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+                   <% if check == true %>
+                      <button class="fabutton" disabled="disabled">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </button>
+                   <% else %>
+                    <form action="/send_request" method="post">
+                      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-                     <input type="hidden" name="id" value="<%= friend.id %>">
+                      <input type="hidden" name="id" value="<%= friend.id %>">
 
-                     <button class="btn btn-success">
-                       Add Friend
-                     </button>
-                  </form>
-                  <% end %>
-                <% end %>
-           </td>
+                      <button class="fabutton">
+                       <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                   </form>
+                   <% end %>
+                 <% end %>
+            </td>
+           <td><%= friend.username %></td>
+           <% if friend.first_name != nil || friend.last_name != nil %>
+           <td><%= friend.first_name %> <%= friend.last_name %></td>
+           <% else %>
+           <td>Private</td>
+           <% end %>
          </tr>
          <% end %>
        </table>

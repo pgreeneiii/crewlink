@@ -1,3 +1,4 @@
+#This model is used to integrate omniauth authentication (STEAM) with Devise User model
 class Identity < ApplicationRecord
   belongs_to :user
   validates_presence_of :uid, :provider

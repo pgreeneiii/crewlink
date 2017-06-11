@@ -1,34 +1,31 @@
-<% page_header "Your Library:" %>
-<div class="page-header">
-   <h1>
-      <a href="/libraries/new" class="btn btn-lg btn-success">New Library</a>
-   </h1>
+<div class="row pb-1">
+   <div class="col-md-offset-10 col-md-2">
+      <form action="/load_library" method="get">
+         <!-- Hidden input for authenticity token to protect from forgery -->
+         <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+         <button class="btn btn-success btn-block">
+            Refresh Library
+         </button>
+      </form>
+   </div>
 </div>
-
-<form action="/load_library" method="get">
-   <!-- Hidden input for authenticity token to protect from forgery -->
-   <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-
-   <button class="btn btn-success">
-      Refresh Library
-   </button>
-</form>
 
 <div class="row">
    <div class="col-md-12">
       <table class="table table-striped table-hover">
          <tr>
-            <th>Owner</th>
-            <th>Image</th>
             <th>Game</th>
+            <th></th>
             <th>Default looking to play status</th>
          </tr>
 
          <% @libraries.each do |library| %>
          <tr>
-            <td><%= library.user.username %></td>
             <td><img src="<%= library.game.img_url %>"></td>
-            <td><%= library.game.title %></td>
+            <td>
+               <%= library.game.title %>
+            </td>
             <td>
                <form id="form_<%= library.id %>" action="/toggle_library_status/<%= library.id %>" method="post">
                   <!-- Hidden input for authenticity token to protect from forgery -->
